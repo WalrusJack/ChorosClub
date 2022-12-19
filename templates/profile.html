@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>{{ user_profile.user.username }}'s Profile</title>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-8 border rounded shadow mx-auto my-4 p-4">
+            <div class="row">
+                <div class="col-md-10">
+                    <h1>{{ user_profile.user.username }}'s Profile</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10">
+                    <p class="text-break">{{ user_profile.bio }}</p>
+                </div>
+                {% if request.user.id == user_profile.user.id %}
+                    <div class="col-md-2">
+                        <a href="{% url 'edit_profile' user_profile.id %}" class="btn btn-outline-primary"><i
+                                class="fa-solid fa-pen-to-square"></i></a>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="row">
+                <h2>Trips</h2>
+                <div class="accordion" id="trip-list-profile">
+                    {% for trip in trips %}
+                        <div class="accordion-item">
+                        <h2 class="accordion-header" id="trip-heading-{{ forloop.counter0 }}">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#trip-collapse-{{ forloop.counter0 }}"
+                                    aria-expanded="true" aria-controls="trip-collapse-{{ forloop.counter0 }}">
+                                {{ trip.title }}
+                            </button>
+                        </h2>
+                        <div id="trip-collapse-{{ forloop.counter0 }}" class="accordion-collapse collapse"
+                             aria-labelledby="trip-heading-{{ forloop.counter0 }}"
+                             data-bs-parent="#trip-list-profile">
+                            <div class="accordion-body">
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <p class="text-break">{{ trip.description }}</p>
+                                        <div class="accordion" id="accordion-trip-log">
+                                            {% for log in trip.logs.all %}
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header"
+                                                        id="heading-trip-log-{{ forloop.counter0 }}">
+                                                        <button class="accordion-button" type="button"
+                                                                data-bs-toggle="collapse"
+                                                                data-bs-target="#collapse-trip-log-{{ forloop.counter0 }}"
+                                                                aria-expanded="true"
+                                                                aria-controls="collapse-trip-log-{{ forloop.counter0 }}">
+                                                            {{ log.title }}
+                                                        </button>
+                                                    </h2>
+                                                    <div id="collapse-trip-log-{{ forloop.counter0 }}"
+                                                         class="accordion-collapse collapse show"
+                                                         aria-labelledby="heading-trip-log-{{ forloop.counter0 }}"
+                                                         data-bs-parent="#accordion-trip-log">
+                                                        <div class="accordion-body">
+                                                            <div class="row">
+                                                                <div class="col-md-8">
+                                                                    <h4 class="text-break">{{ log.place }}</h4>
+                                                                    <p class="text-break">{{ log.description }}</p>
+                                                                    <p class="small">Trip: {{ log.trip }},
+                                                                        Type: {{ log.type }}</p>
+                                                                    <p class="small text-muted">Last
+                                                                        modified: {{ log.last_edited }}</p>
+                                                                </div>
+                                                                {% if request.user.id == user_profile.user.id %}
+                                                                    <div class="col-md-4 text-md-end">
+                                                                        <a href="{% url 'edit_log' log.id %}"
+                                                                           class="btn btn-outline-primary"><i
+                                                                                class="fa-solid fa-pen-to-square"></i></a>
+                                                                        <a href="{% url 'delete_log' log.id %}"
+                                                                           class="btn btn-outline-danger ms-1"><i
+                                                                                class="fa-solid fa-xmark"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        <p class="small text-muted">Last modified: {{ trip.last_edited }}</p>
+                                        {% if request.user.id == user_profile.user.id %}
+                                            <div class="col-md-2 text-md-end">
+                                                <a href="{% url 'edit_trip' trip.id %}"
+                                                   class="btn btn-outline-primary"><i
+                                                        class="fa-solid fa-pen-to-square"></i></a>
+                                                <a href="{% url 'delete_trip' trip.id %}"
+                                                   class="btn btn-outline-danger ms-1"><i
+                                                        class="fa-solid fa-xmark"></i>
+                                                </a>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="row">
+                            <div class="col">
+                                <h4 class="text-muted">Bummer! You don't have any trips
+                                    yet.</h4>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                </div>
+                <div class="row my-4">
+                    <div class="col">
+                        <h2>Travel Logs</h2>
+                        <div class="accordion" id="log-list-profile">
+                            {% for log in logs %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="log-heading-{{ forloop.counter0 }}">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#log-collapse-{{ forloop.counter0 }}"
+                                                aria-expanded="true"
+                                                aria-controls="log-collapse-{{ forloop.counter0 }}">
+                                            {{ log.title }}
+                                        </button>
+                                    </h2>
+                                    <div id="log-collapse-{{ forloop.counter0 }}"
+                                         class="accordion-collapse collapse"
+                                         aria-labelledby="log-heading-{{ forloop.counter0 }}"
+                                         data-bs-parent="#log-list-profile">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-md-10">
+                                                    <h4 class="text-break">{{ log.place }}</h4>
+                                                    <p class="text-break">{{ log.description }}</p>
+                                                    <p class="small">Trip: {{ log.trip }}, Type: {{ log.type }}</p>
+                                                    <p class="small text-muted">Last
+                                                        modified: {{ log.last_edited }}</p>
+                                                </div>
+                                                {% if request.user.id == user_profile.user.id %}
+                                                    <div class="col-md-2 text-md-end">
+                                                        <a href="{% url 'edit_log' log.id %}"
+                                                           class="btn btn-outline-primary"><i
+                                                                class="fa-solid fa-pen-to-square"></i></a>
+                                                        <a href="{% url 'delete_log' log.id %}"
+                                                           class="btn btn-outline-danger ms-1"><i
+                                                                class="fa-solid fa-xmark"></i>
+                                                        </a>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <div class="row">
+                                    <div class="col my-3">
+                                        <h4 class="text-muted">Bummer! You don't have any travel logs yet.</h4>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% if request.user.id == user_profile.user.id %}
+                    <div class="row">
+                        <div class="col mt-3">
+                            <a href="{% url 'new_trip' %}" class="btn btn-success"><i class="fa-solid fa-plus"></i>
+                                New
+                                Trip</a>
+                            <a href="{% url 'new_log' %}" class="btn btn-success"><i
+                                    class="fa-solid fa-plus"></i> New Travel Log</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+{% endblock %}

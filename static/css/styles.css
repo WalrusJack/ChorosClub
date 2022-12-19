@@ -1,0 +1,12 @@
+body {
+    padding-top: 60px;
+}
+
+.navbar-brand img {
+    height: 40px;
+}
+
+#map {
+    width: 540px;
+    height: 360px;
+}

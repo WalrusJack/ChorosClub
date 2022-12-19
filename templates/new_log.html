@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+
+{% block css %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
+          integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14=" crossorigin=""/>
+{% endblock %}
+
+{% block head %}
+    <script
+            src="https://code.jquery.com/jquery-3.6.1.js"
+            integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+            crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+            integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
+            crossorigin=""></script>
+    <title>Log Form</title>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-8 border rounded shadow mx-auto my-4 p-4">
+            <h2>Travel Log Form</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="row">
+                    <div class="col mt-5">
+                        <div class="input-group">
+                            <input type="text" placeholder="Enter a place to search" id="place-text"
+                                   class="form-control">
+                            <button type="button" id="place-search" class="btn btn-primary">Search</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col mt-3">
+                        <select required id="place-list" class="form-select" aria-label="Place">
+                        </select>
+                        <input type="text" name="place" id="place" class="d-none">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col my-3">
+                        <div id="map"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col my-3">
+                        <a href="{% url 'profile' user %}" class="btn btn-primary"><i
+                                class="fa-solid fa-arrow-left"></i> Back</a>
+                        {% if edit %}
+                            <button type="submit" class="btn btn-success"><i class="fa-solid fa-floppy-disk"></i> Save
+                            </button>
+                        {% else %}
+                            <button type="submit" class="btn btn-success"><i class="fa-solid fa-plus"></i> Create
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/map.js' %}"></script>
+{% endblock %}

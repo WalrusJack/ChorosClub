@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+            integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
+    <title>Choro's Cabin</title>
+{% endblock %}
+
+{% block content %}
+    <div class="row row-cols-3 g-4 mt-1 mb-4">
+        {% for user_profile in user_profiles %}
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ user_profile.user.username }}</h5>
+                        <p class="card-text">{{ user_profile.bio }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'profile' user_profile.user.username %}" class="btn btn-success stretched-link">See
+                            More</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="row">
+                <div class="col my-3">
+                    <h4 class="text-muted">No users were found.</h4>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
